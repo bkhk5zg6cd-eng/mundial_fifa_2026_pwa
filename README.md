@@ -50,4 +50,4 @@ Todas las rutas son relativas (`./`), por lo que la app funciona correctamente b
 
 ## Nota operativa
 
-El calendario, filtros y datos principales quedan dentro de la app. Las imágenes de estadios se cargan desde fuentes públicas externas y pueden requerir conexión la primera vez. Los enlaces de canales y plataformas abren los sitios oficiales de cada operador; la cobertura exacta de la fase final puede ajustarse según la programación oficial.
+El calendario, filtros y datos principales quedan dentro de la app. Las imágenes de estadios y los logos de los canales se cargan desde fuentes públicas externas (los logos usan el servicio de favicons de DuckDuckGo) y pueden requerir conexión la primera vez; si no cargan, cada canal muestra un monograma de respaldo. Los enlaces de canales y plataformas abren los sitios oficiales de cada operador; la cobertura exacta de la fase final puede ajustarse según la programación oficial.
