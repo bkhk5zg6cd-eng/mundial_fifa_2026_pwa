@@ -10,6 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="Calendario móvil del Mundial FIFA 2026 con horarios de Colombia, canales de TV, plataformas de streaming y estadios oficiales.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
@@ -80,6 +81,10 @@
     .tag.open{background:rgba(66,211,146,.13);border-color:rgba(66,211,146,.33);color:#c6f8e2}
     .tag.paid{background:rgba(0,153,255,.13);border-color:rgba(0,153,255,.32);color:#cfeaff}
     .tag.pending{background:rgba(255,203,69,.11);border-color:rgba(255,203,69,.28);color:#ffe8a2}
+    a.tag{text-decoration:none;cursor:pointer;transition:transform .12s ease,filter .12s ease}
+    a.tag::after{content:" ↗";font-size:9px;opacity:.7}
+    a.tag:hover,a.tag:focus-visible{filter:brightness(1.18);transform:translateY(-1px);outline:none}
+    a.tag:active{transform:translateY(0)}
     .stadium{display:grid;grid-template-columns:96px 1fr;gap:12px;align-items:center;padding:11px 14px 14px;border-top:1px solid var(--line);background:rgba(2,10,20,.36)}
     .stadium img{width:96px;height:75px;object-fit:cover;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:#0b1524}
     .stadium b{display:block;font-size:13.5px;letter-spacing:-.01em}
@@ -91,12 +96,26 @@
     .stadium-card div{padding:12px}
     .stadium-card b{display:block;font-size:15px}
     .stadium-card span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+    .watch-intro{margin:4px 2px 14px;font-size:13px;color:var(--muted);line-height:1.5}
+    .watch-group{margin:18px 0 8px}
+    .watch-group h3{margin:0 0 9px;font-size:13px;color:#e7f3ff;text-transform:uppercase;letter-spacing:.06em}
+    .broadcast-grid{display:grid;grid-template-columns:1fr;gap:11px}
+    .broadcast-card{display:flex;align-items:center;gap:13px;text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:13px 14px;background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035));box-shadow:0 12px 26px rgba(0,0,0,.2);transition:transform .12s ease,border-color .12s ease}
+    .broadcast-card:hover,.broadcast-card:focus-visible{transform:translateY(-2px);border-color:rgba(0,153,255,.5);outline:none}
+    .broadcast-logo{flex:0 0 48px;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:18px;font-weight:900;letter-spacing:-.04em;color:#fff;border:1px solid rgba(255,255,255,.16)}
+    .broadcast-logo.open{background:linear-gradient(135deg,rgba(66,211,146,.9),rgba(0,120,80,.85))}
+    .broadcast-logo.paid{background:linear-gradient(135deg,var(--blue),var(--blue2))}
+    .broadcast-info{flex:1;min-width:0}
+    .broadcast-info b{display:block;font-size:15px;color:var(--ink)}
+    .broadcast-info span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+    .broadcast-arrow{flex:0 0 auto;color:#8fb6e6;font-size:18px;font-weight:900}
+    .watch-note{margin:16px 2px 0;font-size:11.5px;color:#8ca0bb;line-height:1.5}
     .sources{margin-top:24px;padding:14px;border:1px solid var(--line);border-radius:22px;background:rgba(255,255,255,.05);font-size:12px;color:#bed1e8}
     .sources h3{margin:0 0 8px;font-size:14px;color:white}
     .sources ul{margin:0;padding-left:18px}
     .sources li{margin:6px 0}
-    .bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:30;width:min(432px,calc(100vw - 24px));display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;border:1px solid rgba(255,255,255,.14);background:rgba(4,11,21,.82);backdrop-filter:blur(18px);border-radius:22px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
-    .navbtn{border:0;border-radius:16px;background:transparent;color:#cfe0f5;padding:9px 4px;font-size:12px;font-weight:800}
+    .bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:30;width:min(432px,calc(100vw - 24px));display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;border:1px solid rgba(255,255,255,.14);background:rgba(4,11,21,.82);backdrop-filter:blur(18px);border-radius:22px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
+    .navbtn{border:0;border-radius:16px;background:transparent;color:#cfe0f5;padding:9px 2px;font-size:11.5px;font-weight:800}
     .navbtn.active{background:rgba(0,153,255,.22);color:white}
     .hidden{display:none !important}
     @media (max-width:360px){
@@ -177,6 +196,13 @@
       <div id="stadiums" class="stadium-grid"></div>
     </main>
 
+    <main id="watchView" class="hidden">
+      <div class="section-title"><h2>Dónde ver el Mundial</h2><span>Colombia</span></div>
+      <p class="watch-intro">Canales y plataformas con derechos para Colombia. Toca cualquier opción para abrir su sitio oficial e iniciar sesión o suscribirte.</p>
+      <div id="broadcasters"></div>
+      <p class="watch-note">Los enlaces abren los sitios oficiales de cada operador. La cobertura por partido se indica en cada tarjeta del calendario; los cruces de fase final pueden ajustarse según la programación oficial.</p>
+    </main>
+
     <section class="sources">
       <h3>Fuentes usadas dentro del artefacto</h3>
       <ul>
@@ -191,12 +217,13 @@
   <nav class="bottom-nav">
     <button class="navbtn active" data-nav="calendar">Partidos</button>
     <button class="navbtn" data-nav="colombia">Colombia</button>
+    <button class="navbtn" data-nav="watch">Dónde ver</button>
     <button class="navbtn" data-nav="stadiums">Estadios</button>
   </nav>
 
 <script>
 
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.1.0';
 function isStandaloneMode() {
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 }
@@ -227,7 +254,16 @@ const CARACOL_RCN = new Set([1, 4, 7, 11, 14, 19, 24, 26, 30, 33, 39, 43, 48, 49
 const DISNEY = new Set([1, 3, 4, 7, 9, 11, 13, 14, 19, 24, 26, 33, 34, 38, 39, 43, 48, 49, 56, 66, 70, 71, 101, 102, 104]);
 const WIN = new Set([2, 3, 8, 9, 13, 18, 22, 28, 31, 34, 35, 38, 41, 47, 53, 58, 61, 70, 101, 102, 104]);
 const COLOMBIA = new Set([24, 48, 71]);
-const MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const BROADCASTERS = {
+  'Caracol TV': {url:'https://www.caracoltv.com', type:'open', short:'C', desc:'TV abierta nacional · señal y app Ditu'},
+  'Canal RCN': {url:'https://www.canalrcn.com', type:'open', short:'R', desc:'TV abierta nacional · señal y app'},
+  'DSports': {url:'https://www.directvsports.com', type:'paid', short:'DS', desc:'Canal deportivo de DirecTV'},
+  'DGO': {url:'https://www.dgo.com', type:'paid', short:'GO', desc:'Streaming DirecTV GO'},
+  'Paramount+': {url:'https://www.paramountplus.com', type:'paid', short:'P+', desc:'Streaming · cobertura completa'},
+  'Disney+ Premium': {url:'https://www.disneyplus.com', type:'paid', short:'D+', desc:'Streaming · plan Premium'},
+  'Win Sports': {url:'https://www.winsports.co', type:'paid', short:'W', desc:'Señal deportiva colombiana'}
+};
+const MONTHS =['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 const DAYS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 let currentFilter = 'all';
 let searchTerm = '';
@@ -266,7 +302,12 @@ function matchFilter(m) {
   if (currentFilter === 'knockout') return isKnockout(m);
   return true;
 }
-function renderTags(list, cls) { return list.map(x => `<span class="tag ${cls}">${x}</span>`).join(''); }
+function tagHtml(label, cls) {
+  const b = BROADCASTERS[label];
+  if (b) return `<a class="tag ${cls}" href="${b.url}" target="_blank" rel="noopener noreferrer" aria-label="Ver en ${label} (abre en una pestaña nueva)">${label}</a>`;
+  return `<span class="tag ${cls}">${label}</span>`;
+}
+function renderTags(list, cls) { return list.map(x => tagHtml(x, cls)).join(''); }
 function renderMatch(m) {
   const s = STADIUMS[m.venue];
   const ch = channelInfo(m);
@@ -317,14 +358,36 @@ function renderStadiums() {
     <div><b>${s.common}</b><span>${s.official}</span><span>${s.city}</span><span>Capacidad: ${fmtCapacity(s.capacity)} espectadores</span></div>
   </article>`).join('');
 }
+function broadcasterCard(name) {
+  const b = BROADCASTERS[name];
+  const label = b.type === 'open' ? 'TV abierta' : 'Pago y streaming';
+  return `<a class="broadcast-card" href="${b.url}" target="_blank" rel="noopener noreferrer" aria-label="Abrir ${name} en una pestaña nueva">
+    <span class="broadcast-logo ${b.type}">${b.short}</span>
+    <span class="broadcast-info"><b>${name}</b><span>${b.desc}</span><span>${label}</span></span>
+    <span class="broadcast-arrow" aria-hidden="true">↗</span>
+  </a>`;
+}
+function renderBroadcasters() {
+  const container = document.getElementById('broadcasters');
+  const names = Object.keys(BROADCASTERS);
+  const open = names.filter(n => BROADCASTERS[n].type === 'open');
+  const paid = names.filter(n => BROADCASTERS[n].type === 'paid');
+  container.innerHTML = `
+    <div class="watch-group"><h3>TV abierta</h3><div class="broadcast-grid">${open.map(broadcasterCard).join('')}</div></div>
+    <div class="watch-group"><h3>Pago y streaming</h3><div class="broadcast-grid">${paid.map(broadcasterCard).join('')}</div></div>`;
+}
 function showView(view) {
   const calendar = document.getElementById('calendarView');
   const stadium = document.getElementById('stadiumView');
+  const watch = document.getElementById('watchView');
   const controls = document.getElementById('calendarControls');
+  calendar.classList.add('hidden'); stadium.classList.add('hidden'); watch.classList.add('hidden');
   if (view === 'stadiums') {
-    calendar.classList.add('hidden'); stadium.classList.remove('hidden'); controls.classList.add('hidden');
+    stadium.classList.remove('hidden'); controls.classList.add('hidden');
+  } else if (view === 'watch') {
+    watch.classList.remove('hidden'); controls.classList.add('hidden');
   } else {
-    stadium.classList.add('hidden'); calendar.classList.remove('hidden'); controls.classList.remove('hidden');
+    calendar.classList.remove('hidden'); controls.classList.remove('hidden');
     if (view === 'colombia') { currentFilter = 'colombia'; } else { currentFilter = 'all'; }
     document.querySelectorAll('.filter').forEach(b => b.classList.toggle('active', b.dataset.filter === currentFilter));
     renderCalendar();
@@ -343,6 +406,7 @@ document.querySelectorAll('.filter').forEach(btn => btn.addEventListener('click'
 document.querySelectorAll('.navbtn').forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.nav)));
 renderCalendar();
 renderStadiums();
+renderBroadcasters();
 </script>
 </body>
 </html>
