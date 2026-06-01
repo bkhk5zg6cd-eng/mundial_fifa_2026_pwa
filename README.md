@@ -9,7 +9,24 @@ Calendario móvil instalable (PWA) del Mundial FIFA 2026 con horarios de Colombi
 - **Sección "Dónde ver"**: todos los canales y plataformas de Colombia agrupados por TV abierta y pago/streaming, con acceso directo a cada sitio.
 - **Filtros y búsqueda** por equipo, ciudad, canal o estadio.
 - **Vista de estadios** con capacidad oficial.
+- **Calendario por días plegable**: en "Todos" solo se abre el día de hoy (o el próximo día con partidos); el resto queda colapsado.
+- **Modo "Resultados en vivo"** (opcional): marcadores en vivo dentro de las tarjetas y alertas de gol y resultado final mediante avisos en la app. Desactivado por defecto hasta configurar un feed.
 - **Instalable como app** en iPhone/Android y uso parcial sin conexión gracias al service worker.
+
+## Resultados en vivo (configuración)
+
+El modo en vivo está apagado por defecto y no muestra datos inventados. Para activarlo necesitas un feed de marcadores. Edita `LIVE_CONFIG` dentro de `index.html`:
+
+```js
+const LIVE_CONFIG = {
+  endpoint: 'https://tu-proxy.workers.dev/live', // proxy serverless que devuelve el JSON
+  pollMs: 30000,                                  // frecuencia de actualización
+  demo: false
+};
+```
+
+- El `endpoint` debe apuntar a un **proxy serverless** (Cloudflare Workers, Netlify o Vercel) que consulte la API de marcadores y devuelva un arreglo JSON: `[{ "n": 1, "hs": 2, "as": 1, "status": "live", "minute": 67 }]` (`status`: `live` o `finished`). El proxy es necesario para **no exponer la clave del API** en el navegador y para evitar problemas de CORS. Las alertas de gol/resultado son avisos dentro de la app mientras está abierta; las notificaciones push con la app cerrada requerirían además un backend que envíe Web Push (no incluido).
+- Para una **demostración** sin feed real, abre la app con `?demo=1` (por ejemplo `index.html?demo=1`): simula partidos en vivo, goles y resultados finales.
 
 ## Archivos principales
 

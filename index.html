@@ -148,6 +148,27 @@
     .app-ready{display:none;margin:10px 0 0;border:1px solid rgba(66,211,146,.28);border-radius:16px;padding:9px 10px;background:rgba(66,211,146,.08);color:#c6f8e2;font-size:12px;font-weight:800}
     @media all and (display-mode: standalone){.app-ready{display:block}.install-card{display:none!important}body{padding-top:env(safe-area-inset-top)}}
 
+    /* Resultados en vivo */
+    .live-bar{display:flex;align-items:center;gap:10px;margin-top:10px}
+    .live-toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:#dce8f9;border-radius:999px;padding:8px 13px;font-size:13px;font-weight:800;cursor:pointer}
+    .live-toggle .live-dot{width:9px;height:9px;border-radius:50%;background:#6b7a90}
+    .live-toggle[aria-pressed="true"]{background:linear-gradient(135deg,#ff4d4d,#c81e1e);border-color:transparent;color:#fff}
+    .live-toggle[aria-pressed="true"] .live-dot{background:#fff;animation:livePulse 1.4s infinite}
+    .live-status{font-size:11.5px;color:#9fb2cc;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}70%{box-shadow:0 0 0 7px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+    .pill.live{background:rgba(255,77,77,.16);border-color:rgba(255,77,77,.45);color:#ffc2c2}
+    .pill.live.ft{background:rgba(66,211,146,.12);border-color:rgba(66,211,146,.32);color:#b9f3d9}
+    .score{font-size:20px;font-weight:900;letter-spacing:-.03em;min-width:22px;text-align:right;color:#fff}
+    .teamline.win .team{color:#fff}
+    .toasts{position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:50;width:min(440px,calc(100vw - 20px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
+    .toast{pointer-events:auto;border:1px solid var(--line);border-radius:16px;padding:11px 13px;background:rgba(7,17,31,.96);backdrop-filter:blur(14px);box-shadow:0 14px 40px rgba(0,0,0,.45);font-size:13px;color:#eef6ff;font-weight:700;display:flex;align-items:center;gap:9px;animation:toastIn .25s ease}
+    .toast.goal{border-color:rgba(255,77,77,.5)}
+    .toast.result{border-color:rgba(66,211,146,.4)}
+    .toast .toast-emoji{font-size:18px}
+    .toast.hide{animation:toastOut .25s ease forwards}
+    @keyframes toastIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes toastOut{to{opacity:0;transform:translateY(-8px)}}
+
   </style>
 </head>
 <body>
@@ -172,6 +193,12 @@
           <button class="filter" data-filter="paid">Pago y streaming</button>
           <button class="filter" data-filter="knockout">Eliminatorias</button>
           <button class="filter" data-filter="stadiums">Estadios</button>
+        </div>
+        <div class="live-bar">
+          <button id="liveToggle" class="live-toggle" type="button" aria-pressed="false">
+            <span class="live-dot" aria-hidden="true"></span> Resultados en vivo
+          </button>
+          <span id="liveStatus" class="live-status"></span>
         </div>
       </div>
     </header>
@@ -222,6 +249,8 @@
       </ul>
     </section>
   </div>
+
+  <div id="toasts" class="toasts" aria-live="polite" aria-atomic="false"></div>
 
   <nav class="bottom-nav">
     <button class="navbtn active" data-nav="calendar">Partidos</button>
@@ -323,20 +352,29 @@ function renderTags(list, cls) { return list.map(x => tagHtml(x, cls)).join('');
 function renderMatch(m) {
   const s = STADIUMS[m.venue];
   const ch = channelInfo(m);
+  const live = liveState[m.n];
+  const liveBadge = live
+    ? `<span class="pill live ${live.status === 'finished' ? 'ft' : ''}">${live.status === 'finished' ? 'Finalizado' : 'EN VIVO · ' + live.minute + "'"}</span>`
+    : '';
   const meta = [
+    liveBadge,
     `<span class="pill">Partido ${m.n}</span>`,
     `<span class="pill">${m.stage}</span>`,
     m.group ? `<span class="pill">Grupo ${m.group}</span>` : '',
     isColombia(m) ? `<span class="pill gold">Colombia</span>` : '',
     CARACOL_RCN.has(m.n) ? `<span class="pill green">TV abierta</span>` : ''
   ].filter(Boolean).join('');
+  const homeScore = live ? `<div class="score">${live.hs}</div>` : `<div class="vs">vs</div>`;
+  const awayScore = live ? `<div class="score">${live.as}</div>` : `<div class="vs"></div>`;
+  const homeWin = live && live.status === 'finished' && live.hs > live.as ? ' win' : '';
+  const awayWin = live && live.status === 'finished' && live.as > live.hs ? ' win' : '';
   return `<article class="match ${isColombia(m) ? 'colombia' : ''}">
     <div class="match-top">
       <div class="time"><b>${m.time}</b><span>COT</span></div>
       <div class="teams">
         <div class="meta">${meta}</div>
-        <div class="teamline"><div class="team">${m.home}</div><div class="vs">vs</div></div>
-        <div class="teamline"><div class="team">${m.away}</div><div class="vs"></div></div>
+        <div class="teamline${homeWin}"><div class="team">${m.home}</div>${homeScore}</div>
+        <div class="teamline${awayWin}"><div class="team">${m.away}</div>${awayScore}</div>
       </div>
     </div>
     <div class="channels">
@@ -434,9 +472,101 @@ document.querySelectorAll('.filter').forEach(btn => btn.addEventListener('click'
   renderCalendar();
 }));
 document.querySelectorAll('.navbtn').forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.nav)));
+/* ---- Resultados en vivo: marcadores y alertas dentro de la app ---- */
+const LIVE_CONFIG = {
+  // Apunta esto a tu proxy serverless (Cloudflare Workers / Netlify / Vercel) que devuelve
+  // un arreglo JSON: [{ n, hs, as, status: 'live'|'finished', minute }]. La clave del API
+  // vive en el proxy, nunca en el navegador. Déjalo vacío para mantener la app inerte.
+  endpoint: '',
+  pollMs: 30000,
+  demo: false
+};
+const MATCH_BY_N = MATCHES.reduce((acc, m) => { acc[m.n] = m; return acc; }, {});
+let liveState = {};
+let liveOn = false;
+let liveTimer = null;
+let demoMinute = 0;
+
+function normalizeLive(rows) {
+  if (!Array.isArray(rows)) return [];
+  return rows.map(r => ({
+    n: Number(r.n),
+    hs: Number(r.hs != null ? r.hs : (r.homeScore || 0)),
+    as: Number(r.as != null ? r.as : (r.awayScore || 0)),
+    status: (r.status === 'finished' || r.status === 'FT') ? 'finished' : 'live',
+    minute: Number(r.minute || 0)
+  })).filter(r => MATCH_BY_N[r.n]);
+}
+function demoLiveData() {
+  demoMinute = Math.min(92, demoMinute + 11);
+  const finished = demoMinute >= 90;
+  return MATCHES.slice(0, 3).map((m, i) => ({
+    n: m.n,
+    hs: Math.floor(demoMinute / 35) + (i === 0 ? 1 : 0),
+    as: Math.floor(demoMinute / 55),
+    status: finished ? 'finished' : 'live',
+    minute: finished ? 90 : demoMinute
+  }));
+}
+async function fetchLiveData() {
+  if (LIVE_CONFIG.endpoint) {
+    const res = await fetch(LIVE_CONFIG.endpoint, { headers: { accept: 'application/json' } });
+    if (!res.ok) throw new Error('feed ' + res.status);
+    return normalizeLive(await res.json());
+  }
+  if (LIVE_CONFIG.demo) return normalizeLive(demoLiveData());
+  return [];
+}
+function setLiveStatus(msg) { const el = document.getElementById('liveStatus'); if (el) el.textContent = msg; }
+function showToast(emoji, text, kind) {
+  const wrap = document.getElementById('toasts');
+  if (!wrap) return;
+  const el = document.createElement('div');
+  el.className = 'toast ' + kind;
+  el.innerHTML = `<span class="toast-emoji" aria-hidden="true">${emoji}</span><span>${text}</span>`;
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('hide'); setTimeout(() => el.remove(), 300); }, 6000);
+}
+async function pollLive() {
+  try {
+    const data = await fetchLiveData();
+    if (!data.length) {
+      setLiveStatus(LIVE_CONFIG.endpoint ? 'Sin partidos en vivo ahora.' : 'Sin feed configurado · abre con ?demo=1 para una demostración.');
+      return;
+    }
+    data.forEach(d => {
+      const prev = liveState[d.n];
+      const m = MATCH_BY_N[d.n];
+      if (prev) {
+        if (d.hs > prev.hs) showToast('⚽', `¡Gol de ${m.home}! ${m.home} ${d.hs}-${d.as} ${m.away}`, 'goal');
+        if (d.as > prev.as) showToast('⚽', `¡Gol de ${m.away}! ${m.home} ${d.hs}-${d.as} ${m.away}`, 'goal');
+        if (d.status === 'finished' && prev.status !== 'finished') showToast('🏁', `Final: ${m.home} ${d.hs}-${d.as} ${m.away}`, 'result');
+      }
+      liveState[d.n] = d;
+    });
+    setLiveStatus('Actualizado ' + new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }));
+    if (!document.getElementById('calendarView').classList.contains('hidden')) renderCalendar();
+  } catch (err) {
+    setLiveStatus('No se pudo actualizar el marcador.');
+  }
+}
+function startLive() { pollLive(); liveTimer = setInterval(pollLive, LIVE_CONFIG.demo ? 2600 : LIVE_CONFIG.pollMs); }
+function stopLive() { clearInterval(liveTimer); liveTimer = null; }
+function setLive(on) {
+  liveOn = on;
+  const btn = document.getElementById('liveToggle');
+  if (btn) btn.setAttribute('aria-pressed', String(on));
+  localStorage.setItem('mundialLiveOn', on ? '1' : '0');
+  if (on) { startLive(); }
+  else { stopLive(); liveState = {}; demoMinute = 0; setLiveStatus(''); renderCalendar(); }
+}
+LIVE_CONFIG.demo = LIVE_CONFIG.demo || new URLSearchParams(location.search).has('demo');
+document.getElementById('liveToggle').addEventListener('click', () => setLive(!liveOn));
+
 renderCalendar();
 renderStadiums();
 renderBroadcasters();
+if (LIVE_CONFIG.demo || localStorage.getItem('mundialLiveOn') === '1') setLive(true);
 </script>
 </body>
 </html>
