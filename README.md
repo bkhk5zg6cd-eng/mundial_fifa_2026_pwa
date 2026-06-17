@@ -12,6 +12,8 @@ Calendario móvil instalable (PWA) del Mundial FIFA 2026 con horarios de Colombi
 - **Filtro por país**: menú desplegable para ver solo los partidos de una selección.
 - **Vista de estadios** con capacidad oficial.
 - **Calendario por días plegable**: en "Todos" solo se abre el día de hoy (o el próximo día con partidos); el resto queda colapsado.
+- **Hoy y próximos primero**: los días que ya pasaron se encogen y se mueven bajo "Resultados anteriores"; arriba quedan el día actual y los siguientes.
+- **Tema claro u oscuro**: botón ☀️/🌙 para cambiar de versión; respeta la preferencia del sistema y recuerda tu elección.
 - **Resultados en vivo**: marcadores en tiempo real dentro de las tarjetas (badge `EN VIVO`/`Finalizado`) y alertas de gol y resultado final mediante avisos en la app.
 - **Instalable como app** en iPhone/Android y uso parcial sin conexión gracias al service worker.
 
