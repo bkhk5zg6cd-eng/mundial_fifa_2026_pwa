@@ -8,25 +8,32 @@ Calendario móvil instalable (PWA) del Mundial FIFA 2026 con horarios de Colombi
 - **Canales y streaming por partido**, con los nombres de cada operador como **enlaces directos** a su sitio oficial.
 - **Sección "Dónde ver"**: todos los canales y plataformas de Colombia agrupados por TV abierta y pago/streaming, con acceso directo a cada sitio.
 - **Filtros y búsqueda** por equipo, ciudad, canal o estadio.
+- **Selector de día tipo calendario**: una tira de fechas para saltar a cualquier jornada con un toque.
+- **Filtro por país**: menú desplegable para ver solo los partidos de una selección.
 - **Vista de estadios** con capacidad oficial.
 - **Calendario por días plegable**: en "Todos" solo se abre el día de hoy (o el próximo día con partidos); el resto queda colapsado.
-- **Modo "Resultados en vivo"** (opcional): marcadores en vivo dentro de las tarjetas y alertas de gol y resultado final mediante avisos en la app. Desactivado por defecto hasta configurar un feed.
+- **Resultados en vivo**: marcadores en tiempo real dentro de las tarjetas (badge `EN VIVO`/`Finalizado`) y alertas de gol y resultado final mediante avisos en la app.
 - **Instalable como app** en iPhone/Android y uso parcial sin conexión gracias al service worker.
 
 ## Resultados en vivo (configuración)
 
-El modo en vivo está apagado por defecto y no muestra datos inventados. Para activarlo necesitas un feed de marcadores. Edita `LIVE_CONFIG` dentro de `index.html`:
+El modo en vivo usa por defecto el **marcador público de ESPN** (`site.api.espn.com`), que es **gratis, sin clave y con CORS**, así que funciona directo desde GitHub Pages sin backend. Solo activa el botón **En vivo** en la app. Cuando hay partidos en juego muestra el marcador y dispara avisos de gol y de resultado final.
+
+Configuración en `LIVE_CONFIG` dentro de `index.html`:
 
 ```js
 const LIVE_CONFIG = {
-  endpoint: 'https://tu-proxy.workers.dev/live', // proxy serverless que devuelve el JSON
-  pollMs: 30000,                                  // frecuencia de actualización
+  espn: 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard',
+  endpoint: '',   // opcional: tu propio proxy; si lo defines, tiene prioridad sobre ESPN
+  pollMs: 30000,  // frecuencia de actualización
   demo: false
 };
 ```
 
-- El `endpoint` debe apuntar a un **proxy serverless** (Cloudflare Workers, Netlify o Vercel) que consulte la API de marcadores y devuelva un arreglo JSON: `[{ "n": 1, "hs": 2, "as": 1, "status": "live", "minute": 67 }]` (`status`: `live` o `finished`). El proxy es necesario para **no exponer la clave del API** en el navegador y para evitar problemas de CORS. Las alertas de gol/resultado son avisos dentro de la app mientras está abierta; las notificaciones push con la app cerrada requerirían además un backend que envíe Web Push (no incluido).
-- Para una **demostración** sin feed real, abre la app con `?demo=1` (por ejemplo `index.html?demo=1`): simula partidos en vivo, goles y resultados finales.
+- **ESPN (por defecto)**: no requiere nada. Si ESPN cambiara la ruta de la liga del Mundial, ajusta `espn`. Los nombres de equipo de ESPN (inglés) se emparejan con el calendario por dupla de selecciones; la fase final mapea cuando se conozcan los clasificados.
+- **Proxy propio (opcional)**: si prefieres otro proveedor (p. ej. football-data.org de pago/gratis), pon un `endpoint` a un **proxy serverless** (Cloudflare Workers, Netlify, Vercel) que devuelva `[{ "n": 1, "hs": 2, "as": 1, "status": "live", "minute": 67 }]`. El proxy mantiene la clave del API fuera del navegador.
+- Las alertas de gol/resultado son avisos **dentro de la app** mientras está abierta. Las notificaciones push con la app cerrada requerirían además un backend que envíe Web Push (no incluido).
+- Para una **demostración** sin partidos reales en juego, abre la app con `?demo=1` (por ejemplo `index.html?demo=1`): simula partidos en vivo, goles y resultados finales.
 
 ## Archivos principales
 

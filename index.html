@@ -37,7 +37,7 @@
     html{scroll-behavior:smooth}
     body{margin:0;background:radial-gradient(circle at top left,#183d67 0,#07111f 44%,#050a12 100%);font-family:Arial, Helvetica, sans-serif;color:var(--ink);line-height:1.35}
     .app{max-width:460px;margin:0 auto;min-height:100vh;padding:0 14px 98px}
-    header{position:sticky;top:0;z-index:20;margin:0 -14px;padding:14px 14px 12px;background:linear-gradient(180deg,rgba(7,17,31,.98),rgba(7,17,31,.88) 82%,rgba(7,17,31,0));backdrop-filter:blur(18px)}
+    header{position:relative;z-index:20;margin:0 -14px;padding:14px 14px 4px}
     .hero{padding:18px 16px;border:1px solid var(--line);border-radius:28px;background:linear-gradient(135deg,rgba(0,153,255,.22),rgba(0,31,56,.96)),url('https://digitalhub.fifa.com/transform/1128cc71-29f1-4400-9f47-4ba6f3f76fbd/FIFA-World-Cup-26-Brand-Launch?io=transform:fill,width:900,height:500&quality=75') center/cover;box-shadow:var(--shadow);overflow:hidden}
     .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#cfe9ff;font-weight:700}
     h1{margin:8px 0 8px;font-size:27px;line-height:1.05;letter-spacing:-.04em}
@@ -46,7 +46,7 @@
     .stat{border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(0,0,0,.22);padding:9px 8px}
     .stat b{display:block;font-size:16px}
     .stat span{display:block;color:#bcd0e8;font-size:11px}
-    .controls{padding:12px 0 0}
+    .controls{position:sticky;top:0;z-index:20;margin:0 -14px;padding:10px 14px 12px;background:linear-gradient(180deg,rgba(7,17,31,.99),rgba(7,17,31,.94) 88%,rgba(7,17,31,.8));backdrop-filter:blur(18px)}
     .search{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--ink);border-radius:18px;padding:13px 14px;font-size:15px;outline:none}
     .search::placeholder{color:#9fb2cc}
     .chips{display:flex;gap:8px;overflow:auto;padding:10px 2px 1px;scrollbar-width:none}
@@ -58,7 +58,7 @@
     .section-title h2{margin:0;font-size:16px;letter-spacing:-.02em}
     .section-title span{font-size:12px;color:var(--muted)}
     .day-group{margin:0}
-    .day{display:flex;align-items:center;gap:10px;width:100%;margin:18px 0 8px;position:sticky;top:196px;z-index:9;padding:9px 11px;border:1px solid transparent;border-radius:14px;background:linear-gradient(180deg,rgba(7,17,31,.96),rgba(7,17,31,.74));backdrop-filter:blur(8px);color:inherit;font:inherit;text-align:left;cursor:default}
+    .day{display:flex;align-items:center;gap:10px;width:100%;margin:18px 0 8px;position:sticky;top:var(--day-top,196px);z-index:9;padding:9px 11px;border:1px solid transparent;border-radius:14px;background:linear-gradient(180deg,rgba(7,17,31,.96),rgba(7,17,31,.74));backdrop-filter:blur(8px);color:inherit;font:inherit;text-align:left;cursor:default}
     .day-group.collapsible .day{cursor:pointer}
     .day-group.collapsible .day:hover{border-color:var(--line);background:linear-gradient(180deg,rgba(18,41,66,.96),rgba(7,17,31,.82))}
     .day h3{margin:0;font-size:15px;color:#e7f3ff}
@@ -154,7 +154,9 @@
     .live-toggle .live-dot{width:9px;height:9px;border-radius:50%;background:#6b7a90}
     .live-toggle[aria-pressed="true"]{background:linear-gradient(135deg,#ff4d4d,#c81e1e);border-color:transparent;color:#fff}
     .live-toggle[aria-pressed="true"] .live-dot{background:#fff;animation:livePulse 1.4s infinite}
-    .live-status{font-size:11.5px;color:#9fb2cc;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .live-status{display:block;margin-top:6px;font-size:11.5px;color:#9fb2cc;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .live-status:empty{display:none}
+    .live-toggle{flex:0 0 auto}
     @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}70%{box-shadow:0 0 0 7px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
     .pill.live{background:rgba(255,77,77,.16);border-color:rgba(255,77,77,.45);color:#ffc2c2}
     .pill.live.ft{background:rgba(66,211,146,.12);border-color:rgba(66,211,146,.32);color:#b9f3d9}
@@ -168,6 +170,22 @@
     .toast.hide{animation:toastOut .25s ease forwards}
     @keyframes toastIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
     @keyframes toastOut{to{opacity:0;transform:translateY(-8px)}}
+
+    /* Selector de día (tira de calendario) */
+    .date-strip{display:flex;gap:7px;overflow:auto;padding:11px 2px 2px;scrollbar-width:none}
+    .date-strip::-webkit-scrollbar{display:none}
+    .date-chip{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:46px;padding:7px 9px;border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:14px;color:#dce8f9;cursor:pointer;line-height:1.05}
+    .date-chip span{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:800}
+    .date-chip b{font-size:16px;font-weight:900;letter-spacing:-.03em}
+    .date-chip i{font-size:8.5px;font-style:normal;color:var(--muted);text-transform:uppercase;font-weight:700}
+    .date-chip.colombia{border-color:rgba(255,203,69,.5)}
+    .date-chip.active{background:linear-gradient(135deg,var(--blue),var(--blue2));border-color:transparent;color:#fff}
+    .date-chip.active span,.date-chip.active i{color:#dbeeff}
+    /* Fila de país + en vivo */
+    .controls-row{display:flex;gap:8px;align-items:center;margin-top:10px}
+    .country-select{flex:1;min-width:0;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--ink);border-radius:14px;padding:10px 32px 10px 12px;font-size:13px;font-weight:700;outline:none;-webkit-appearance:none;appearance:none;background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path d="M1 1l5 5 5-5" stroke="%23aebbd0" stroke-width="2" fill="none" stroke-linecap="round"/></svg>');background-repeat:no-repeat;background-position:right 12px center}
+    .country-select option{background:#0f1f33;color:#fff}
+    .live-bar{display:flex;align-items:center;gap:10px;margin-top:8px}
 
   </style>
 </head>
@@ -194,12 +212,16 @@
           <button class="filter" data-filter="knockout">Eliminatorias</button>
           <button class="filter" data-filter="stadiums">Estadios</button>
         </div>
-        <div class="live-bar">
+        <div id="dateStrip" class="date-strip" aria-label="Seleccionar día"></div>
+        <div class="controls-row">
+          <select id="countrySelect" class="country-select" aria-label="Filtrar por país">
+            <option value="">Todos los países</option>
+          </select>
           <button id="liveToggle" class="live-toggle" type="button" aria-pressed="false">
-            <span class="live-dot" aria-hidden="true"></span> Resultados en vivo
+            <span class="live-dot" aria-hidden="true"></span> En vivo
           </button>
-          <span id="liveStatus" class="live-status"></span>
         </div>
+        <span id="liveStatus" class="live-status"></span>
       </div>
     </header>
 
@@ -306,6 +328,7 @@ const DAYS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábad
 let currentFilter = 'all';
 let searchTerm = '';
 let openDays = new Set();
+let countryFilter = '';
 function todayStr() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function defaultOpenDate(dates) { const t = todayStr(); return dates.find(d => d >= t) || dates[dates.length - 1]; }
 
@@ -337,6 +360,7 @@ function searchableText(m) {
 }
 function matchFilter(m) {
   if (searchTerm && !searchableText(m).includes(searchTerm)) return false;
+  if (countryFilter && m.home !== countryFilter && m.away !== countryFilter) return false;
   if (currentFilter === 'colombia') return isColombia(m);
   if (currentFilter === 'open') return CARACOL_RCN.has(m.n);
   if (currentFilter === 'paid') return true;
@@ -391,10 +415,12 @@ function renderCalendar() {
   const container = document.getElementById('matches');
   const filtered = MATCHES.slice().sort((a,b)=>`${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`)).filter(matchFilter);
   document.getElementById('counter').textContent = `${filtered.length} partidos`;
-  if (!filtered.length) { container.innerHTML = '<div class="empty">No encontré partidos con ese filtro.</div>'; return; }
-  const accordion = currentFilter === 'all' && !searchTerm;
+  if (!filtered.length) { container.innerHTML = '<div class="empty">No encontré partidos con ese filtro.</div>'; renderDateStrip([], null); return; }
+  const accordion = currentFilter === 'all' && !searchTerm && !countryFilter;
   const dates = filtered.reduce((acc, m) => { if (!acc.includes(m.date)) acc.push(m.date); return acc; }, []);
   if (accordion && !openDays.size) openDays = new Set([defaultOpenDate(dates)]);
+  const activeDate = accordion ? (dates.find(d => openDays.has(d)) || null) : null;
+  renderDateStrip(dates, activeDate);
   let html = '';
   dates.forEach(date => {
     const dayMatches = filtered.filter(m => m.date === date);
@@ -409,6 +435,42 @@ function renderCalendar() {
     </section>`;
   });
   container.innerHTML = html;
+  syncStickyOffsets();
+}
+function renderDateStrip(dates, activeDate) {
+  const strip = document.getElementById('dateStrip');
+  if (!strip) return;
+  if (!dates.length) { strip.innerHTML = ''; return; }
+  strip.innerHTML = dates.map(d => {
+    const [y, mo, da] = d.split('-').map(Number);
+    const dt = new Date(Date.UTC(y, mo - 1, da, 12));
+    const wd = DAYS[dt.getUTCDay()].slice(0, 3);
+    const hasCol = MATCHES.some(m => m.date === d && isColombia(m));
+    const cls = (d === activeDate ? ' active' : '') + (hasCol ? ' colombia' : '');
+    return `<button type="button" class="date-chip${cls}" data-jump="${d}"><span>${wd}</span><b>${da}</b><i>${MONTHS[mo - 1].slice(0, 3)}</i></button>`;
+  }).join('');
+  const act = strip.querySelector('.date-chip.active');
+  if (act) act.scrollIntoView({ inline: 'center', block: 'nearest' });
+}
+function stickyTop() {
+  const c = document.getElementById('calendarControls');
+  return (c && !c.classList.contains('hidden')) ? c.getBoundingClientRect().height : 0;
+}
+function syncStickyOffsets() {
+  document.documentElement.style.setProperty('--day-top', Math.max(0, Math.round(stickyTop() - 2)) + 'px');
+}
+function goToDate(date) {
+  if (currentFilter === 'all' && !searchTerm && !countryFilter) { openDays = new Set([date]); renderCalendar(); }
+  requestAnimationFrame(() => {
+    const el = document.querySelector(`.day[data-date="${date}"]`);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - stickyTop() - 8, behavior: 'smooth' });
+  });
+}
+function populateCountries() {
+  const sel = document.getElementById('countrySelect');
+  if (!sel) return;
+  const teams = [...new Set(MATCHES.filter(m => m.stage === 'Fase de grupos').flatMap(m => [m.home, m.away]))].sort((a, b) => a.localeCompare(b, 'es'));
+  sel.insertAdjacentHTML('beforeend', teams.map(t => `<option value="${t}">${t}</option>`).join(''));
 }
 function renderStadiums() {
   const container = document.getElementById('stadiums');
@@ -474,9 +536,11 @@ document.querySelectorAll('.filter').forEach(btn => btn.addEventListener('click'
 document.querySelectorAll('.navbtn').forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.nav)));
 /* ---- Resultados en vivo: marcadores y alertas dentro de la app ---- */
 const LIVE_CONFIG = {
-  // Apunta esto a tu proxy serverless (Cloudflare Workers / Netlify / Vercel) que devuelve
-  // un arreglo JSON: [{ n, hs, as, status: 'live'|'finished', minute }]. La clave del API
-  // vive en el proxy, nunca en el navegador. Déjalo vacío para mantener la app inerte.
+  // Fuente por defecto: marcador público de ESPN (gratis, sin clave y con CORS).
+  // Funciona directo desde el navegador en GitHub Pages, sin backend.
+  espn: 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard',
+  // Opcional: si prefieres tu propio proxy serverless, ponlo aquí y devolverá
+  // un arreglo JSON [{ n, hs, as, status: 'live'|'finished', minute }]; tendrá prioridad.
   endpoint: '',
   pollMs: 30000,
   demo: false
@@ -508,14 +572,67 @@ function demoLiveData() {
     minute: finished ? 90 : demoMinute
   }));
 }
+/* Mapeo de nombres de ESPN (inglés) a los del calendario (español) + emparejado por dupla. */
+const EN2ES = {
+  'Mexico':'México','South Africa':'Sudáfrica','South Korea':'Corea del Sur','Korea Republic':'Corea del Sur',
+  'Czechia':'República Checa','Czech Republic':'República Checa','Canada':'Canadá',
+  'Bosnia and Herzegovina':'Bosnia y Herzegovina','Bosnia & Herzegovina':'Bosnia y Herzegovina','Bosnia-Herzegovina':'Bosnia y Herzegovina',
+  'United States':'Estados Unidos','USA':'Estados Unidos','Paraguay':'Paraguay','Haiti':'Haití','Scotland':'Escocia',
+  'Australia':'Australia','Turkey':'Turquía','Turkiye':'Turquía','Türkiye':'Turquía','Brazil':'Brasil','Morocco':'Marruecos',
+  'Qatar':'Qatar','Switzerland':'Suiza','Ivory Coast':'Costa de Marfil',"Cote d'Ivoire":'Costa de Marfil',"Côte d'Ivoire":'Costa de Marfil',
+  'Ecuador':'Ecuador','Germany':'Alemania','Curacao':'Curazao','Curaçao':'Curazao','Netherlands':'Países Bajos','Japan':'Japón',
+  'Sweden':'Suecia','Tunisia':'Túnez','Saudi Arabia':'Arabia Saudí','Uruguay':'Uruguay','Spain':'España','Cape Verde':'Cabo Verde',
+  'Iran':'Irán','IR Iran':'Irán','New Zealand':'Nueva Zelanda','Belgium':'Bélgica','Egypt':'Egipto','France':'Francia',
+  'Senegal':'Senegal','Iraq':'Irak','Norway':'Noruega','Argentina':'Argentina','Algeria':'Argelia','Austria':'Austria',
+  'Jordan':'Jordania','Ghana':'Ghana','Panama':'Panamá','England':'Inglaterra','Croatia':'Croacia','Portugal':'Portugal',
+  'DR Congo':'RD Congo','Congo DR':'RD Congo','Uzbekistan':'Uzbekistán','Colombia':'Colombia'
+};
+function teamKey(name) { return (name || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim(); }
+const KEY2ES = {};
+const PAIR2MATCH = {};
+MATCHES.forEach(m => {
+  if (m.stage === 'Fase de grupos') {
+    KEY2ES[teamKey(m.home)] = m.home; KEY2ES[teamKey(m.away)] = m.away;
+    PAIR2MATCH[[m.home, m.away].sort().join('|')] = m;
+  }
+});
+function toES(name) { return EN2ES[name] || KEY2ES[teamKey(name)] || null; }
+function normalizeEspn(json) {
+  const events = (json && json.events) || [];
+  const out = [];
+  events.forEach(ev => {
+    const comp = ev.competitions && ev.competitions[0];
+    if (!comp || !comp.competitors || comp.competitors.length < 2) return;
+    const cs = comp.competitors;
+    const ha = cs.find(x => x.homeAway === 'home') || cs[0];
+    const aw = cs.find(x => x.homeAway === 'away') || cs[1];
+    const esA = toES(ha.team && (ha.team.displayName || ha.team.name || ha.team.shortDisplayName));
+    const esB = toES(aw.team && (aw.team.displayName || aw.team.name || aw.team.shortDisplayName));
+    if (!esA || !esB) return;
+    const m = PAIR2MATCH[[esA, esB].sort().join('|')];
+    if (!m) return;
+    const st = (ev.status && ev.status.type) || {};
+    if (st.state === 'pre') return;
+    const score = {};
+    score[esA] = Number(ha.score || 0); score[esB] = Number(aw.score || 0);
+    out.push({
+      n: m.n, hs: score[m.home], as: score[m.away],
+      status: st.state === 'post' ? 'finished' : 'live',
+      minute: parseInt((ev.status && ev.status.displayClock) || '0', 10) || 0
+    });
+  });
+  return out;
+}
 async function fetchLiveData() {
+  if (LIVE_CONFIG.demo) return normalizeLive(demoLiveData());
   if (LIVE_CONFIG.endpoint) {
     const res = await fetch(LIVE_CONFIG.endpoint, { headers: { accept: 'application/json' } });
     if (!res.ok) throw new Error('feed ' + res.status);
     return normalizeLive(await res.json());
   }
-  if (LIVE_CONFIG.demo) return normalizeLive(demoLiveData());
-  return [];
+  const res = await fetch(LIVE_CONFIG.espn, { headers: { accept: 'application/json' } });
+  if (!res.ok) throw new Error('espn ' + res.status);
+  return normalizeEspn(await res.json());
 }
 function setLiveStatus(msg) { const el = document.getElementById('liveStatus'); if (el) el.textContent = msg; }
 function showToast(emoji, text, kind) {
@@ -562,7 +679,12 @@ function setLive(on) {
 }
 LIVE_CONFIG.demo = LIVE_CONFIG.demo || new URLSearchParams(location.search).has('demo');
 document.getElementById('liveToggle').addEventListener('click', () => setLive(!liveOn));
+document.getElementById('countrySelect').addEventListener('change', e => { countryFilter = e.target.value; openDays = new Set(); renderCalendar(); });
+document.getElementById('dateStrip').addEventListener('click', e => { const b = e.target.closest('.date-chip'); if (b) goToDate(b.dataset.jump); });
+window.addEventListener('resize', syncStickyOffsets);
+window.addEventListener('load', syncStickyOffsets);
 
+populateCountries();
 renderCalendar();
 renderStadiums();
 renderBroadcasters();
