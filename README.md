@@ -15,11 +15,16 @@ Calendario móvil instalable (PWA) del Mundial FIFA 2026 con horarios de Colombi
 - **Hoy y próximos primero**: los días que ya pasaron se encogen y se mueven bajo "Resultados anteriores"; arriba quedan el día actual y los siguientes.
 - **Tema claro u oscuro**: botón ☀️/🌙 para cambiar de versión; respeta la preferencia del sistema y recuerda tu elección.
 - **Resultados en vivo**: marcadores en tiempo real dentro de las tarjetas (badge `EN VIVO`/`Finalizado`) y alertas de gol y resultado final mediante avisos en la app.
+- **Resultados anteriores**: los partidos jugados muestran su marcador final automáticamente (se cargan al abrir, sin activar el modo en vivo).
+- **Tablas de posiciones**: tabla de cada uno de los 12 grupos (PJ, DG, Pts), con las dos primeras posiciones resaltadas.
+- **Goleadores**: ranking de máximos artilleros del torneo con su selección y número de goles.
 - **Instalable como app** en iPhone/Android y uso parcial sin conexión gracias al service worker.
 
 ## Resultados en vivo (configuración)
 
 El modo en vivo usa por defecto el **marcador público de ESPN** (`site.api.espn.com`), que es **gratis, sin clave y con CORS**, así que funciona directo desde GitHub Pages sin backend. Solo activa el botón **En vivo** en la app. Cuando hay partidos en juego muestra el marcador y dispara avisos de gol y de resultado final.
+
+Los **resultados anteriores** (marcador de cada día), las **tablas de posiciones** y los **goleadores** vienen de los mismos endpoints públicos de ESPN (rango de fechas del scoreboard y `.../standings`); también son gratis, sin clave y con CORS, y se cargan solos.
 
 Configuración en `LIVE_CONFIG` dentro de `index.html`:
 

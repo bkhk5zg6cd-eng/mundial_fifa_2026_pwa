@@ -123,8 +123,8 @@
     .sources h3{margin:0 0 8px;font-size:14px;color:white}
     .sources ul{margin:0;padding-left:18px}
     .sources li{margin:6px 0}
-    .bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:30;width:min(432px,calc(100vw - 24px));display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;border:1px solid rgba(255,255,255,.14);background:rgba(4,11,21,.82);backdrop-filter:blur(18px);border-radius:22px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
-    .navbtn{border:0;border-radius:16px;background:transparent;color:#cfe0f5;padding:9px 2px;font-size:11.5px;font-weight:800}
+    .bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:30;width:min(452px,calc(100vw - 20px));display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:7px;border:1px solid rgba(255,255,255,.14);background:rgba(4,11,21,.82);backdrop-filter:blur(18px);border-radius:22px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
+    .navbtn{border:0;border-radius:14px;background:transparent;color:#cfe0f5;padding:9px 1px;font-size:10.5px;font-weight:800;white-space:nowrap}
     .navbtn.active{background:rgba(0,153,255,.22);color:white}
     .hidden{display:none !important}
     @media (max-width:360px){
@@ -200,50 +200,90 @@
     .theme-toggle{position:fixed;top:calc(10px + env(safe-area-inset-top));right:12px;z-index:40;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(7,17,31,.66);backdrop-filter:blur(10px);color:var(--ink);font-size:16px;line-height:1;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.3)}
     .theme-toggle:active{transform:scale(.94)}
 
-    /* ====== Tema claro (versión de día) ====== */
-    [data-theme="light"]{--bg:#eef3fa;--card:#ffffff;--card2:#f3f7fd;--ink:#11243d;--muted:#56698a;--line:rgba(14,36,68,.14);--shadow:0 18px 50px rgba(25,55,95,.16)}
-    [data-theme="light"] body{background:radial-gradient(circle at top left,#dce8fb 0,#eef3fa 46%,#f7fafe 100%);color:var(--ink)}
-    [data-theme="light"] .theme-toggle{background:rgba(255,255,255,.78);box-shadow:0 8px 22px rgba(25,55,95,.16)}
-    [data-theme="light"] .controls{background:linear-gradient(180deg,rgba(238,243,250,.99),rgba(238,243,250,.93) 88%,rgba(238,243,250,.78))}
+    /* Tablas y goleadores */
+    .data-status{margin:2px 2px 12px;font-size:12.5px;color:var(--muted);line-height:1.5}
+    .group-grid{display:grid;grid-template-columns:1fr;gap:12px}
+    .group-card{border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));overflow:hidden}
+    .group-card h3{margin:0;padding:11px 14px;font-size:13px;letter-spacing:.02em;color:#e7f3ff;border-bottom:1px solid var(--line)}
+    .standings{width:100%;border-collapse:collapse;font-size:13px}
+    .standings th,.standings td{padding:8px 6px;text-align:center}
+    .standings th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:800}
+    .standings th:nth-child(2),.standings td.tname{text-align:left;padding-left:12px}
+    .standings td{color:#dce8f9;border-top:1px solid rgba(255,255,255,.06)}
+    .standings td.pos{width:22px;color:var(--muted);font-weight:800}
+    .standings td.tname{font-weight:700}
+    .standings td.pts{font-weight:900;color:#fff}
+    .standings tr.q td.pos{color:var(--green)}
+    .standings tr.colombia td.tname{color:var(--gold)}
+    .scorer-row{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:16px;padding:11px 14px;margin-bottom:9px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03))}
+    .scorer-rank{flex:0 0 24px;text-align:center;font-size:15px;font-weight:900;color:var(--muted)}
+    .scorer-info{flex:1;min-width:0}
+    .scorer-info b{display:block;font-size:14.5px;color:var(--ink)}
+    .scorer-info span{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+    .scorer-row.colombia{border-color:rgba(255,203,69,.5)}
+    .scorer-row.colombia .scorer-info span{color:var(--gold)}
+    .scorer-goals{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;line-height:1}
+    .scorer-goals b,.scorer-goals{font-size:20px;font-weight:900;color:#fff}
+    .scorer-goals i{font-size:9.5px;font-style:normal;font-weight:700;color:var(--muted);text-transform:uppercase;margin-top:2px}
+
+    /* ====== Tema claro (crisp white) ====== */
+    [data-theme="light"]{--bg:#f5f7fa;--card:#ffffff;--card2:#eef1f6;--ink:#0f1b2e;--muted:#5b6b82;--line:rgba(15,27,46,.10);--shadow:0 12px 30px rgba(20,40,80,.10)}
+    [data-theme="light"] body{background:#f5f7fa;color:var(--ink)}
+    [data-theme="light"] .theme-toggle{background:#fff;border-color:var(--line);box-shadow:0 4px 14px rgba(20,40,80,.12)}
+    [data-theme="light"] .controls{background:linear-gradient(180deg,rgba(245,247,250,.98),rgba(245,247,250,.92));border-bottom:1px solid var(--line)}
     [data-theme="light"] .hero h1,[data-theme="light"] .stat b{color:#fff}
-    [data-theme="light"] .search{background:rgba(14,36,68,.05);color:var(--ink)}
-    [data-theme="light"] .search::placeholder{color:#7184a1}
-    [data-theme="light"] .filter{background:rgba(14,36,68,.05);color:#2c3d57}
-    [data-theme="light"] .notice{color:#9a5212}
-    [data-theme="light"] .day{background:linear-gradient(180deg,rgba(238,243,250,.97),rgba(238,243,250,.72))}
-    [data-theme="light"] .day h3{color:#16335a}
-    [data-theme="light"] .day-group.collapsible .day:hover{background:linear-gradient(180deg,rgba(222,233,248,.98),rgba(238,243,250,.85))}
+    [data-theme="light"] .search{background:#fff;color:var(--ink);border-color:var(--line);box-shadow:0 1px 2px rgba(16,32,60,.05)}
+    [data-theme="light"] .search::placeholder{color:#8190a5}
+    [data-theme="light"] .filter{background:#fff;color:#33445f;border-color:var(--line)}
+    [data-theme="light"] .filter.active{color:#fff}
+    [data-theme="light"] .notice{background:rgba(255,138,40,.1);border-color:rgba(255,138,40,.3);color:#9a4a0f}
+    [data-theme="light"] .day{background:linear-gradient(180deg,rgba(245,247,250,.97),rgba(245,247,250,.7));border-color:transparent}
+    [data-theme="light"] .day h3{color:#13294a}
+    [data-theme="light"] .day-group.collapsible .day:hover{background:#eef2f8;border-color:var(--line)}
     [data-theme="light"] .past-divider{color:var(--muted)}
-    [data-theme="light"] .match{background:#fff;box-shadow:0 14px 28px rgba(25,55,95,.1)}
-    [data-theme="light"] .match.colombia{box-shadow:0 16px 40px rgba(255,170,0,.14)}
-    [data-theme="light"] .pill{background:rgba(14,36,68,.05);color:#33445f}
-    [data-theme="light"] .channel-box{background:rgba(14,36,68,.03)}
-    [data-theme="light"] .channel-box h4{color:#5a6b85}
-    [data-theme="light"] .tag{background:rgba(14,36,68,.06);color:#22354f}
+    [data-theme="light"] .match{background:#fff;border-color:var(--line);box-shadow:0 1px 2px rgba(16,32,60,.05),0 10px 24px rgba(16,32,60,.07)}
+    [data-theme="light"] .match.colombia{border-color:rgba(230,160,0,.5);box-shadow:0 10px 26px rgba(230,160,0,.14)}
+    [data-theme="light"] .pill{background:#eef1f6;color:#3a4a63;border-color:var(--line)}
+    [data-theme="light"] .pill.gold{background:rgba(230,160,0,.14);border-color:rgba(230,160,0,.4);color:#8a6300}
+    [data-theme="light"] .pill.green{background:rgba(20,160,100,.12);border-color:rgba(20,160,100,.32);color:#0c7a4d}
+    [data-theme="light"] .channel-box{background:#f7f9fc;border-color:var(--line)}
+    [data-theme="light"] .channel-box h4{color:#62718a}
+    [data-theme="light"] .tag{background:#eef1f6;color:#26374f;border-color:var(--line)}
+    [data-theme="light"] .tag.open{background:rgba(20,160,100,.12);border-color:rgba(20,160,100,.3);color:#0c7a4d}
+    [data-theme="light"] .tag.paid{background:rgba(0,110,242,.1);border-color:rgba(0,110,242,.28);color:#0a55b8}
     [data-theme="light"] .vs{color:var(--muted)}
-    [data-theme="light"] .score{color:#11243d}
-    [data-theme="light"] .stadium{background:rgba(14,36,68,.03)}
+    [data-theme="light"] .score{color:#0f1b2e}
+    [data-theme="light"] .stadium{background:#f7f9fc;border-color:var(--line)}
     [data-theme="light"] .stadium b{color:var(--ink)}
-    [data-theme="light"] .stadium-card{background:#fff}
+    [data-theme="light"] .stadium-card{background:#fff;border-color:var(--line)}
     [data-theme="light"] .stadium-card b{color:var(--ink)}
-    [data-theme="light"] .broadcast-card{background:#fff;box-shadow:0 12px 26px rgba(25,55,95,.1)}
+    [data-theme="light"] .broadcast-card{background:#fff;border-color:var(--line);box-shadow:0 1px 2px rgba(16,32,60,.05),0 8px 20px rgba(16,32,60,.06)}
     [data-theme="light"] .broadcast-info b{color:var(--ink)}
-    [data-theme="light"] .watch-group h3{color:#2c3d57}
-    [data-theme="light"] .watch-intro,[data-theme="light"] .watch-note{color:#56698a}
-    [data-theme="light"] .sources{background:#fff;color:#42546f}
+    [data-theme="light"] .broadcast-logo{border-color:var(--line)}
+    [data-theme="light"] .watch-group h3{color:#33445f}
+    [data-theme="light"] .watch-intro,[data-theme="light"] .watch-note,[data-theme="light"] .data-status{color:#5b6b82}
+    [data-theme="light"] .sources{background:#fff;border-color:var(--line);color:#46566f}
     [data-theme="light"] .sources h3{color:var(--ink)}
-    [data-theme="light"] .bottom-nav{background:rgba(255,255,255,.86);box-shadow:0 18px 60px rgba(25,55,95,.22)}
-    [data-theme="light"] .navbtn{color:#42546f}
-    [data-theme="light"] .navbtn.active{background:rgba(0,153,255,.16);color:#0a2a52}
-    [data-theme="light"] .date-chip{background:rgba(14,36,68,.05);color:#2c3d57}
-    [data-theme="light"] .country-select{background:rgba(14,36,68,.05);color:var(--ink)}
-    [data-theme="light"] .country-select option{background:#fff;color:#11243d}
-    [data-theme="light"] .live-status{color:#5a6b85}
-    [data-theme="light"] .live-toggle{color:#2c3d57}
-    [data-theme="light"] .toast{background:rgba(255,255,255,.97);color:#16263d}
-    [data-theme="light"] .empty{color:var(--muted)}
-    [data-theme="light"] .install-card b{color:#0a2a52}
-    [data-theme="light"] .install-card p,[data-theme="light"] .install-card ol{color:#42546f}
+    [data-theme="light"] .bottom-nav{background:rgba(255,255,255,.92);border-color:var(--line);box-shadow:0 10px 40px rgba(16,32,60,.16)}
+    [data-theme="light"] .navbtn{color:#56657d}
+    [data-theme="light"] .navbtn.active{background:rgba(0,110,242,.12);color:#0a55b8}
+    [data-theme="light"] .date-chip{background:#fff;color:#33445f;border-color:var(--line)}
+    [data-theme="light"] .date-chip span,[data-theme="light"] .date-chip i{color:var(--muted)}
+    [data-theme="light"] .date-chip.active{color:#fff}
+    [data-theme="light"] .date-chip.active span,[data-theme="light"] .date-chip.active i{color:#dbeaff}
+    [data-theme="light"] .country-select{background:#fff;color:var(--ink);border-color:var(--line)}
+    [data-theme="light"] .country-select option{background:#fff;color:#0f1b2e}
+    [data-theme="light"] .live-status{color:#62718a}
+    [data-theme="light"] .live-toggle{background:#fff;color:#33445f;border-color:var(--line)}
+    [data-theme="light"] .toast{background:#fff;border-color:var(--line);color:#14233a;box-shadow:0 12px 36px rgba(16,32,60,.18)}
+    [data-theme="light"] .empty{color:var(--muted);border-color:var(--line)}
+    [data-theme="light"] .install-card b{color:#0a55b8}
+    [data-theme="light"] .install-card p,[data-theme="light"] .install-card ol{color:#46566f}
+    [data-theme="light"] .group-card,[data-theme="light"] .scorer-row{background:#fff;border-color:var(--line);box-shadow:0 1px 2px rgba(16,32,60,.05),0 8px 20px rgba(16,32,60,.06)}
+    [data-theme="light"] .group-card h3{color:var(--ink);border-color:var(--line)}
+    [data-theme="light"] .standings td{color:#26374f;border-color:var(--line)}
+    [data-theme="light"] .standings td.pts{color:var(--ink)}
+    [data-theme="light"] .scorer-info b,[data-theme="light"] .scorer-goals{color:var(--ink)}
 
   </style>
   <script>
@@ -321,6 +361,18 @@
       <div id="stadiums" class="stadium-grid"></div>
     </main>
 
+    <main id="tablesView" class="hidden">
+      <div class="section-title"><h2>Tablas de posiciones</h2><span>Fase de grupos</span></div>
+      <div id="tablesStatus" class="data-status"></div>
+      <div id="groups" class="group-grid"></div>
+    </main>
+
+    <main id="scorersView" class="hidden">
+      <div class="section-title"><h2>Goleadores</h2><span id="scorersMeta">Mundial 2026</span></div>
+      <div id="scorersStatus" class="data-status"></div>
+      <div id="scorers"></div>
+    </main>
+
     <main id="watchView" class="hidden">
       <div class="section-title"><h2>Dónde ver el Mundial</h2><span>Colombia</span></div>
       <p class="watch-intro">Canales y plataformas con derechos para Colombia. Toca cualquier opción para abrir su sitio oficial e iniciar sesión o suscribirte.</p>
@@ -345,7 +397,8 @@
 
   <nav class="bottom-nav">
     <button class="navbtn active" data-nav="calendar">Partidos</button>
-    <button class="navbtn" data-nav="colombia">Colombia</button>
+    <button class="navbtn" data-nav="tables">Tablas</button>
+    <button class="navbtn" data-nav="scorers">Goleadores</button>
     <button class="navbtn" data-nav="watch">Dónde ver</button>
     <button class="navbtn" data-nav="stadiums">Estadios</button>
   </nav>
@@ -579,17 +632,17 @@ function renderBroadcasters() {
     <div class="watch-group"><h3>Pago y streaming</h3><div class="broadcast-grid">${paid.map(broadcasterCard).join('')}</div></div>`;
 }
 function showView(view) {
-  const calendar = document.getElementById('calendarView');
-  const stadium = document.getElementById('stadiumView');
-  const watch = document.getElementById('watchView');
+  const views = { calendar: 'calendarView', stadiums: 'stadiumView', watch: 'watchView', tables: 'tablesView', scorers: 'scorersView' };
   const controls = document.getElementById('calendarControls');
-  calendar.classList.add('hidden'); stadium.classList.add('hidden'); watch.classList.add('hidden');
-  if (view === 'stadiums') {
-    stadium.classList.remove('hidden'); controls.classList.add('hidden');
-  } else if (view === 'watch') {
-    watch.classList.remove('hidden'); controls.classList.add('hidden');
+  Object.values(views).forEach(id => document.getElementById(id).classList.add('hidden'));
+  if (view === 'stadiums' || view === 'watch') {
+    document.getElementById(views[view]).classList.remove('hidden'); controls.classList.add('hidden');
+  } else if (view === 'tables') {
+    document.getElementById('tablesView').classList.remove('hidden'); controls.classList.add('hidden'); loadStandings();
+  } else if (view === 'scorers') {
+    document.getElementById('scorersView').classList.remove('hidden'); controls.classList.add('hidden'); loadScorers();
   } else {
-    calendar.classList.remove('hidden'); controls.classList.remove('hidden');
+    document.getElementById('calendarView').classList.remove('hidden'); controls.classList.remove('hidden');
     if (view === 'colombia') { currentFilter = 'colombia'; } else { currentFilter = 'all'; }
     document.querySelectorAll('.filter').forEach(b => b.classList.toggle('active', b.dataset.filter === currentFilter));
     renderCalendar();
@@ -715,6 +768,95 @@ async function fetchLiveData() {
   if (!res.ok) throw new Error('espn ' + res.status);
   return normalizeEspn(await res.json());
 }
+
+/* ---- Datos del torneo (resultados, tablas, goleadores) desde ESPN ---- */
+const TOURNEY_START = '20260611';
+const STANDINGS_URL = 'https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings';
+let tournamentJson = null;
+let standingsData = null;
+function todayCompact() { return todayStr().replace(/-/g, ''); }
+
+async function loadResults() {
+  try {
+    const res = await fetch(`${LIVE_CONFIG.espn}?dates=${TOURNEY_START}-${todayCompact()}`, { headers: { accept: 'application/json' } });
+    if (!res.ok) return;
+    tournamentJson = await res.json();
+    normalizeEspn(tournamentJson).forEach(d => { liveState[d.n] = d; });
+    if (!document.getElementById('calendarView').classList.contains('hidden')) renderCalendar();
+  } catch (e) {}
+}
+async function ensureTournamentJson() {
+  if (tournamentJson) return tournamentJson;
+  const res = await fetch(`${LIVE_CONFIG.espn}?dates=${TOURNEY_START}-${todayCompact()}`, { headers: { accept: 'application/json' } });
+  if (!res.ok) throw new Error('espn ' + res.status);
+  tournamentJson = await res.json();
+  return tournamentJson;
+}
+function computeScorers(json) {
+  const idToES = {};
+  (json.events || []).forEach(ev => (((ev.competitions || [])[0] || {}).competitors || []).forEach(c => { if (c.team) idToES[c.team.id] = toES(c.team.displayName) || c.team.displayName; }));
+  const tally = {};
+  (json.events || []).forEach(ev => {
+    const comp = (ev.competitions || [])[0]; if (!comp) return;
+    (comp.details || []).forEach(d => {
+      if (!d.scoringPlay || d.ownGoal) return;
+      const a = (d.athletesInvolved || [])[0]; if (!a) return;
+      const team = idToES[d.team && d.team.id] || '';
+      const key = (a.displayName || '') + '|' + team;
+      if (!tally[key]) tally[key] = { name: a.displayName || '', team: team, goals: 0, pk: 0 };
+      tally[key].goals++;
+      if (d.penaltyKick) tally[key].pk++;
+    });
+  });
+  return Object.values(tally).sort((a, b) => b.goals - a.goals || a.name.localeCompare(b.name));
+}
+function renderScorers(list) {
+  const c = document.getElementById('scorers');
+  c.innerHTML = list.slice(0, 40).map((s, i) => `<div class="scorer-row${s.team === 'Colombia' ? ' colombia' : ''}">
+    <span class="scorer-rank">${i + 1}</span>
+    <span class="scorer-info"><b>${s.name}</b><span>${s.team}${s.pk ? ` · ${s.pk} de penal` : ''}</span></span>
+    <span class="scorer-goals">${s.goals}<i>${s.goals === 1 ? 'gol' : 'goles'}</i></span>
+  </div>`).join('');
+}
+async function loadScorers() {
+  const status = document.getElementById('scorersStatus');
+  try {
+    if (!tournamentJson) status.textContent = 'Cargando goleadores…';
+    const json = await ensureTournamentJson();
+    const list = computeScorers(json);
+    renderScorers(list);
+    document.getElementById('scorersMeta').textContent = list.length ? `${list.length} jugadores` : 'Mundial 2026';
+    status.textContent = list.length ? '' : 'Aún no se registran goles en el torneo.';
+  } catch (e) { status.textContent = 'No se pudieron cargar los goleadores. Revisa tu conexión.'; }
+}
+function statVal(entry, name) { const s = (entry.stats || []).find(x => x.name === name); return s ? Number(s.value) : 0; }
+function renderStandings(data) {
+  const groups = data.children || [];
+  document.getElementById('groups').innerHTML = groups.map(g => {
+    const entries = ((g.standings && g.standings.entries) || []).slice().sort((a, b) =>
+      statVal(b, 'points') - statVal(a, 'points') || statVal(b, 'pointDifferential') - statVal(a, 'pointDifferential') || statVal(b, 'pointsFor') - statVal(a, 'pointsFor'));
+    const letter = (g.name || '').replace(/Group\s*/i, '');
+    const rows = entries.map((e, i) => {
+      const es = toES(e.team.displayName) || e.team.displayName;
+      const dg = statVal(e, 'pointDifferential');
+      return `<tr class="${i < 2 ? 'q' : ''}${es === 'Colombia' ? ' colombia' : ''}"><td class="pos">${i + 1}</td><td class="tname">${es}</td><td>${statVal(e, 'gamesPlayed')}</td><td>${dg > 0 ? '+' : ''}${dg}</td><td class="pts">${statVal(e, 'points')}</td></tr>`;
+    }).join('');
+    return `<div class="group-card"><h3>Grupo ${letter}</h3><table class="standings"><thead><tr><th></th><th>Equipo</th><th>PJ</th><th>DG</th><th>Pts</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }).join('');
+}
+async function loadStandings() {
+  const status = document.getElementById('tablesStatus');
+  try {
+    if (!standingsData) status.textContent = 'Cargando tablas…';
+    if (!standingsData) {
+      const res = await fetch(STANDINGS_URL, { headers: { accept: 'application/json' } });
+      if (!res.ok) throw new Error('standings ' + res.status);
+      standingsData = await res.json();
+    }
+    renderStandings(standingsData);
+    status.textContent = (standingsData.children && standingsData.children.length) ? '' : 'Las tablas aparecerán cuando inicie la fase de grupos.';
+  } catch (e) { status.textContent = 'No se pudieron cargar las tablas. Revisa tu conexión.'; }
+}
 function setLiveStatus(msg) { const el = document.getElementById('liveStatus'); if (el) el.textContent = msg; }
 function showToast(emoji, text, kind) {
   const wrap = document.getElementById('toasts');
@@ -729,7 +871,7 @@ async function pollLive() {
   try {
     const data = await fetchLiveData();
     if (!data.length) {
-      setLiveStatus(LIVE_CONFIG.endpoint ? 'Sin partidos en vivo ahora.' : 'Sin feed configurado · abre con ?demo=1 para una demostración.');
+      setLiveStatus('Sin partidos en vivo en este momento.');
       return;
     }
     data.forEach(d => {
@@ -756,7 +898,7 @@ function setLive(on) {
   if (btn) btn.setAttribute('aria-pressed', String(on));
   localStorage.setItem('mundialLiveOn', on ? '1' : '0');
   if (on) { startLive(); }
-  else { stopLive(); liveState = {}; demoMinute = 0; setLiveStatus(''); renderCalendar(); }
+  else { stopLive(); demoMinute = 0; setLiveStatus(''); if (LIVE_CONFIG.demo) { liveState = {}; } loadResults(); renderCalendar(); }
 }
 LIVE_CONFIG.demo = LIVE_CONFIG.demo || new URLSearchParams(location.search).has('demo');
 document.getElementById('liveToggle').addEventListener('click', () => setLive(!liveOn));
@@ -771,7 +913,7 @@ function applyTheme(t) {
   const btn = document.getElementById('themeToggle');
   if (btn) { btn.textContent = t === 'light' ? '🌙' : '☀️'; btn.setAttribute('aria-pressed', String(t === 'light')); }
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', t === 'light' ? '#dce8fb' : '#001f38');
+  if (meta) meta.setAttribute('content', t === 'light' ? '#f5f7fa' : '#001f38');
 }
 applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
 document.getElementById('themeToggle').addEventListener('click', () => {
@@ -782,6 +924,7 @@ populateCountries();
 renderCalendar();
 renderStadiums();
 renderBroadcasters();
+if (!LIVE_CONFIG.demo) loadResults();
 if (LIVE_CONFIG.demo || localStorage.getItem('mundialLiveOn') === '1') setLive(true);
 </script>
 </body>
