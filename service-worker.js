@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mundial-2026-colombia-pwa-v9';
+const CACHE_NAME = 'mundial-2026-colombia-pwa-v10';
 const APP_SHELL = [
   './',
   './index.html',
@@ -28,6 +28,11 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
+
+  // Solo se gestiona el mismo origen (app shell). Las peticiones a otros orígenes
+  // (ESPN, logos, imágenes de estadios) van siempre a la red para no servir datos viejos.
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return;
 
   if (request.mode === 'navigate') {
     event.respondWith(
