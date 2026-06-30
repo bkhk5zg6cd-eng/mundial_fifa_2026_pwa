@@ -797,26 +797,31 @@ async function fetchLiveData() {
 }
 
 /* ---- Datos del torneo (resultados, tablas, goleadores) desde ESPN ---- */
-const TOURNEY_START = '20260611';
+// El scoreboard de ESPN limita ~100 eventos por consulta, así que pedimos
+// todo el torneo en dos tramos (incluye las eliminatorias futuras ya sembradas).
+const TOURNEY_RANGES = ['20260611-20260703', '20260704-20260720'];
 const STANDINGS_URL = 'https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings';
 let tournamentJson = null;
 let standingsData = null;
 function todayCompact() { return todayStr().replace(/-/g, ''); }
-
+async function fetchTournamentEvents() {
+  const parts = await Promise.all(TOURNEY_RANGES.map(async range => {
+    try { const r = await fetch(`${LIVE_CONFIG.espn}?dates=${range}`, { headers: { accept: 'application/json' } }); return r.ok ? await r.json() : null; } catch (e) { return null; }
+  }));
+  const events = []; const seen = new Set();
+  parts.forEach(j => ((j && j.events) || []).forEach(e => { if (!seen.has(e.id)) { seen.add(e.id); events.push(e); } }));
+  return { events };
+}
 async function loadResults() {
   try {
-    const res = await fetch(`${LIVE_CONFIG.espn}?dates=${TOURNEY_START}-${todayCompact()}`, { headers: { accept: 'application/json' } });
-    if (!res.ok) return;
-    tournamentJson = await res.json();
+    tournamentJson = await fetchTournamentEvents();
     normalizeEspn(tournamentJson).forEach(d => { liveState[d.n] = d; });
     if (!document.getElementById('calendarView').classList.contains('hidden')) renderCalendar();
   } catch (e) {}
 }
 async function ensureTournamentJson() {
   if (tournamentJson) return tournamentJson;
-  const res = await fetch(`${LIVE_CONFIG.espn}?dates=${TOURNEY_START}-${todayCompact()}`, { headers: { accept: 'application/json' } });
-  if (!res.ok) throw new Error('espn ' + res.status);
-  tournamentJson = await res.json();
+  tournamentJson = await fetchTournamentEvents();
   return tournamentJson;
 }
 function computeScorers(json) {
