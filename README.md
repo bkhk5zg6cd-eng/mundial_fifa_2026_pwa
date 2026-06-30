@@ -16,6 +16,7 @@ Calendario móvil instalable (PWA) del Mundial FIFA 2026 con horarios de Colombi
 - **Tema claro u oscuro**: botón ☀️/🌙 para cambiar de versión; respeta la preferencia del sistema y recuerda tu elección.
 - **Resultados en vivo**: marcadores en tiempo real dentro de las tarjetas (badge `EN VIVO`/`Finalizado`) y alertas de gol y resultado final mediante avisos en la app.
 - **Resultados anteriores**: los partidos jugados muestran su marcador final automáticamente (se cargan al abrir, sin activar el modo en vivo).
+- **Cruces que se actualizan solos**: a medida que avanza el torneo, las eliminatorias reemplazan los marcadores de posición ("Segundo Grupo A", "Ganador Partido 74") por los **equipos reales que clasifican** (emparejados por fecha + sede desde ESPN). Colombia se resalta en dorado también en fase final.
 - **Tablas de posiciones**: tabla de cada uno de los 12 grupos (PJ, DG, Pts), con las dos primeras posiciones resaltadas.
 - **Goleadores**: ranking de máximos artilleros del torneo con su selección y número de goles.
 - **Instalable como app** en iPhone/Android y uso parcial sin conexión gracias al service worker.

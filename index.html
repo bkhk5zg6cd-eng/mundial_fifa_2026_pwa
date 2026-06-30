@@ -451,6 +451,9 @@ let currentFilter = 'all';
 let searchTerm = '';
 let openDays = new Set();
 let countryFilter = '';
+let teamOverride = {}; // n -> {home, away}: equipos reales una vez se conoce el cruce
+function mHome(m) { return (teamOverride[m.n] && teamOverride[m.n].home) || m.home; }
+function mAway(m) { return (teamOverride[m.n] && teamOverride[m.n].away) || m.away; }
 function todayStr() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function defaultOpenDate(dates) { const t = todayStr(); return dates.find(d => d >= t) || dates[dates.length - 1]; }
 
@@ -461,7 +464,7 @@ function dateLabel(dateStr) {
 }
 function fmtCapacity(n) { return new Intl.NumberFormat('es-CO').format(n); }
 function isKnockout(m) { return m.n >= 73; }
-function isColombia(m) { return COLOMBIA.has(m.n) || m.home.includes('Colombia') || m.away.includes('Colombia'); }
+function isColombia(m) { return COLOMBIA.has(m.n) || mHome(m).includes('Colombia') || mAway(m).includes('Colombia'); }
 function channelInfo(m) {
   const open = [];
   const paid = ['DSports', 'DGO', 'Paramount+'];
@@ -478,11 +481,11 @@ function channelInfo(m) {
 function searchableText(m) {
   const s = STADIUMS[m.venue];
   const ch = channelInfo(m);
-  return [m.n, m.date, m.time, m.stage, m.group, m.home, m.away, m.venue, s.official, s.common, s.city, ...ch.open, ...ch.paid, ...ch.pending].join(' ').toLowerCase();
+  return [m.n, m.date, m.time, m.stage, m.group, mHome(m), mAway(m), m.home, m.away, m.venue, s.official, s.common, s.city, ...ch.open, ...ch.paid, ...ch.pending].join(' ').toLowerCase();
 }
 function matchFilter(m) {
   if (searchTerm && !searchableText(m).includes(searchTerm)) return false;
-  if (countryFilter && m.home !== countryFilter && m.away !== countryFilter) return false;
+  if (countryFilter && mHome(m) !== countryFilter && mAway(m) !== countryFilter) return false;
   if (currentFilter === 'colombia') return isColombia(m);
   if (currentFilter === 'open') return CARACOL_RCN.has(m.n);
   if (currentFilter === 'paid') return true;
@@ -519,8 +522,8 @@ function renderMatch(m) {
       <div class="time"><b>${m.time}</b><span>COT</span></div>
       <div class="teams">
         <div class="meta">${meta}</div>
-        <div class="teamline${homeWin}"><div class="team">${m.home}</div>${homeScore}</div>
-        <div class="teamline${awayWin}"><div class="team">${m.away}</div>${awayScore}</div>
+        <div class="teamline${homeWin}"><div class="team">${mHome(m)}</div>${homeScore}</div>
+        <div class="teamline${awayWin}"><div class="team">${mAway(m)}</div>${awayScore}</div>
       </div>
     </div>
     <div class="channels">
@@ -731,6 +734,23 @@ MATCHES.forEach(m => {
   }
 });
 function toES(name) { return EN2ES[name] || KEY2ES[teamKey(name)] || null; }
+// Índices para emparejar partidos de eliminatorias por fecha + sede (no hay equipos para emparejar).
+function vnorm(s) { return (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+const VENUE2KEY = {};
+Object.keys(STADIUMS).forEach(key => {
+  [key, STADIUMS[key].common, STADIUMS[key].official].forEach(name => String(name).split('/').forEach(part => { const v = vnorm(part); if (v) VENUE2KEY[v] = key; }));
+});
+function venueKeyFromEspn(venue) {
+  if (!venue) return null;
+  const fn = vnorm(venue.fullName || venue.name || '');
+  if (!fn) return null;
+  if (VENUE2KEY[fn]) return VENUE2KEY[fn];
+  for (const k in VENUE2KEY) { if (fn.includes(k) || k.includes(fn)) return VENUE2KEY[k]; }
+  return null;
+}
+const DATEVENUE2N = {};
+MATCHES.forEach(m => { DATEVENUE2N[m.date + '|' + m.venue] = m.n; });
+function espnColombiaDate(iso) { return new Date(new Date(iso).getTime() - 5 * 3600000).toISOString().slice(0, 10); }
 function normalizeEspn(json) {
   const events = (json && json.events) || [];
   const out = [];
@@ -742,18 +762,25 @@ function normalizeEspn(json) {
     const aw = cs.find(x => x.homeAway === 'away') || cs[1];
     const esA = toES(ha.team && (ha.team.displayName || ha.team.name || ha.team.shortDisplayName));
     const esB = toES(aw.team && (aw.team.displayName || aw.team.name || aw.team.shortDisplayName));
-    if (!esA || !esB) return;
-    const m = PAIR2MATCH[[esA, esB].sort().join('|')];
-    if (!m) return;
+    if (!esA || !esB) return; // equipos por definir (TBD): no tocar el marcador de posición
     const st = (ev.status && ev.status.type) || {};
-    if (st.state === 'pre') return;
-    const score = {};
-    score[esA] = Number(ha.score || 0); score[esB] = Number(aw.score || 0);
-    out.push({
-      n: m.n, hs: score[m.home], as: score[m.away],
-      status: st.state === 'post' ? 'finished' : 'live',
-      minute: parseInt((ev.status && ev.status.displayClock) || '0', 10) || 0
-    });
+    const minute = parseInt((ev.status && ev.status.displayClock) || '0', 10) || 0;
+    const hScore = Number(ha.score || 0), aScore = Number(aw.score || 0);
+    const evDate = espnColombiaDate(ev.date);
+    // Fase de grupos: emparejar por dupla (misma fecha para evitar confundir con una revancha en eliminatorias)
+    const gm = PAIR2MATCH[[esA, esB].sort().join('|')];
+    if (gm && gm.date === evDate) {
+      if (st.state === 'pre') return;
+      const score = {}; score[esA] = hScore; score[esB] = aScore;
+      out.push({ n: gm.n, hs: score[gm.home], as: score[gm.away], status: st.state === 'post' ? 'finished' : 'live', minute });
+      return;
+    }
+    // Eliminatorias: emparejar por fecha + sede y rellenar los equipos reales que clasificaron
+    const vKey = venueKeyFromEspn(comp.venue);
+    const n = vKey ? DATEVENUE2N[evDate + '|' + vKey] : null;
+    if (!n || n < 73) return;
+    teamOverride[n] = { home: esA, away: esB };
+    if (st.state !== 'pre') out.push({ n: n, hs: hScore, as: aScore, status: st.state === 'post' ? 'finished' : 'live', minute });
   });
   return out;
 }
@@ -877,10 +904,11 @@ async function pollLive() {
     data.forEach(d => {
       const prev = liveState[d.n];
       const m = MATCH_BY_N[d.n];
+      const hn = mHome(m), an = mAway(m);
       if (prev) {
-        if (d.hs > prev.hs) showToast('⚽', `¡Gol de ${m.home}! ${m.home} ${d.hs}-${d.as} ${m.away}`, 'goal');
-        if (d.as > prev.as) showToast('⚽', `¡Gol de ${m.away}! ${m.home} ${d.hs}-${d.as} ${m.away}`, 'goal');
-        if (d.status === 'finished' && prev.status !== 'finished') showToast('🏁', `Final: ${m.home} ${d.hs}-${d.as} ${m.away}`, 'result');
+        if (d.hs > prev.hs) showToast('⚽', `¡Gol de ${hn}! ${hn} ${d.hs}-${d.as} ${an}`, 'goal');
+        if (d.as > prev.as) showToast('⚽', `¡Gol de ${an}! ${hn} ${d.hs}-${d.as} ${an}`, 'goal');
+        if (d.status === 'finished' && prev.status !== 'finished') showToast('🏁', `Final: ${hn} ${d.hs}-${d.as} ${an}`, 'result');
       }
       liveState[d.n] = d;
     });

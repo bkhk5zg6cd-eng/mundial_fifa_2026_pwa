@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mundial-2026-colombia-pwa-v7';
+const CACHE_NAME = 'mundial-2026-colombia-pwa-v8';
 const APP_SHELL = [
   './',
   './index.html',
